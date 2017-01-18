@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta content='width=device-width, initial-scale=1.0' name='viewport'>
+    <title>GrandCapital</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script>// Этот скрипт будет размещён в <head> над всеми внешними объявлениями стилей (link[rel=stylesheet])
+function loadFont(fontName, woffUrl, woff2Url) {
+  // 0. Многие неподдерживаемые браузеры должны останавливать работу тут.
+  var nua = navigator.userAgent;
+  var noSupport = !window.addEventListener // IE8 и ниже
+        || (nua.match(/(Android (2|3|4.0|4.1|4.2|4.3))|(Opera (Mini|Mobi))/) && !nua.match(/Chrome/)) // Android Stock Browser до 4.4 и Opera Mini
+
+  if (noSupport) {
+    return;
+  }
+
+  // 1. Настраиваем localStorage
+  var loSto = {};
+  try {
+    // Устанавливаем вспомогательную переменную для помощи с localStorage,
+    // например, для случаев когда cookies отключены и браузер не даёт к ним доступа.
+    // Иначе могут быть получены исключения, которые полностью остановят загрузку шрифтов.
+    loSto = localStorage || {};
+  } catch(ex) {}
+
+  var localStoragePrefix = 'x-font-' + fontName;
+  var localStorageUrlKey = localStoragePrefix + 'url';
+  var localStorageCssKey = localStoragePrefix + 'css';
+  var storedFontUrl = loSto[localStorageUrlKey];
+  var storedFontCss = loSto[localStorageCssKey];
+
+  // 2. Создаём элемент <style>, который мы используем для вставки шрифта, закодированного в base64.
+  var styleElement = document.createElement('style');
+  styleElement.rel = 'stylesheet';
+  document.head.appendChild(styleElement);
+  // Из-за ошибок IE9 установка styleElement.textContent должна быть после этой строки.
+
+  // 3. Проверяем, находится ли шрифт уже в localStorage и последней ли он версии.
+  if (storedFontCss && (storedFontUrl === woffUrl || storedFontUrl === woff2Url)) {
+    // css до сих пор в localStorage
+    // и были загружены из одного из текущих адресов
+
+    // 4. Применяем стили шрифта.
+    styleElement.textContent = storedFontCss;
+  } else {
+    // Данных нет, или они загружены с устаревшего URL,
+    // поэтому мы должны загрузить их снова.
+
+    // 5. Проверяем поддержку WOFF2 чтобы узнать, какой URL использовать.
+    var url = (woff2Url && supportsWoff2())
+    ? woff2Url // WOFF2 URL передан в функцию и поддерживается.
+    : woffUrl; // Поддерживается только WOFF.
+
+    // 6. Получаем данные с сервера.
+    var request = new XMLHttpRequest();
+    request.open('GET', url);
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400) {
+        // 7. Обновляем localStorage новыми данными и применяем стили шрифта.
+        loSto[localStorageUrlKey] = url;
+        loSto[localStorageCssKey] = styleElement.textContent = request.responseText;
+      }
+    };
+    request.send();
+  }
+
+  function supportsWoff2() {
+    // https://github.com/filamentgroup/woff2-feature-test
+    if( !( "FontFace" in window ) ) {
+      return false;
+    }
+
+    var f = new FontFace('t', 'url( "data:application/font-woff2;base64,d09GMgABAAAAAADcAAoAAAAAAggAAACWAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAABk4ALAoUNAE2AiQDCAsGAAQgBSAHIBtvAcieB3aD8wURQ+TZazbRE9HvF5vde4KCYGhiCgq/NKPF0i6UIsZynbP+Xi9Ng+XLbNlmNz/xIBBqq61FIQRJhC/+QA/08PJQJ3sK5TZFMlWzC/iK5GUN40psgqvxwBjBOg6JUSJ7ewyKE2AAaXZrfUB4v+hze37ugJ9d+DeYqiDwVgCawviwVFGnuttkLqIMGivmDg" ) format( "woff2" )', {});
+    f.load()['catch'](function() {});
+
+    return f.status == 'loading';
+  }
+}
+
+
+// Вызываем функцию подгрузки
+loadFont(
+    'Open Sans_my',                      // название шрифта
+    '/css/font_opensans_woff.css?v=1',   // откуда с сервака тянуть CSS с закодированным в base64 форматом WOFF
+    '/css/font_opensans_woff2.css?v=1'   // откуда с сервака тянуть CSS с закодированным в base64 форматом WOFF2
+  );
+loadFont(
+    'PT Sans Caption',                      // название шрифта
+    '/css/font_opensans_woff.css?v=1',   // откуда с сервака тянуть CSS с закодированным в base64 форматом WOFF
+    '/css/font_opensans_woff2.css?v=1'   // откуда с сервака тянуть CSS с закодированным в base64 форматом WOFF2
+  );
+loadFont(
+    'PT Serif Caption',                      // название шрифта
+   '/css/font_opensans_woff.css?v=1',   // откуда с сервака тянуть CSS с закодированным в base64 форматом WOFF
+    '/css/font_opensans_woff2.css?v=1'   // откуда с сервака тянуть CSS с закодированным в base64 форматом WOFF2
+  );
+loadFont(
+    'PT Serif Regular',                      // название шрифта
+   '/css/font_opensans_woff.css?v=1',   // откуда с сервака тянуть CSS с закодированным в base64 форматом WOFF
+    '/css/font_opensans_woff2.css?v=1'   // откуда с сервака тянуть CSS с закодированным в base64 форматом WOFF2
+  );
+loadFont(
+    'PT SansRegular',                      // название шрифта
+   '/css/font_opensans_woff.css?v=1',   // откуда с сервака тянуть CSS с закодированным в base64 форматом WOFF
+    '/css/font_opensans_woff2.css?v=1'   // откуда с сервака тянуть CSS с закодированным в base64 форматом WOFF2
+  );
+loadFont(
+    'PT SansItalic',                      // название шрифта
+   '/css/font_opensans_woff.css?v=1',   // откуда с сервака тянуть CSS с закодированным в base64 форматом WOFF
+    '/css/font_opensans_woff2.css?v=1'   // откуда с сервака тянуть CSS с закодированным в base64 форматом WOFF2
+  );
+loadFont(
+    'PT SansBold',                      // название шрифта
+   '/css/font_opensans_woff.css?v=1',   // откуда с сервака тянуть CSS с закодированным в base64 форматом WOFF
+    '/css/font_opensans_woff2.css?v=1'   // откуда с сервака тянуть CSS с закодированным в base64 форматом WOFF2
+  );
+</script>
+    <noscript><link rel="stylesheet" href="css/font_opensans_woff.css"></noscript>
+    <noscript><link rel="stylesheet" href="css/font_opensans_woff2.css"></noscript>
+</head>
+<body>
+
+  <main>
+    <div class="inner">
+      <div class="picture-item" id="to-menu">
+        <h1 class="picture-item__title">Принцип работы ECN-счета</h1>
+        <div class="picture-item__inner">
+          <div class="picture-item__bank-inner">
+            <div class="picture-item__bank">
+              <div class="picture-item__img">
+                <div class="picture-item__bank-img-skin">
+                  <img class="picture-item__photo" src="img/Bank1.png" alt="Банк 1">
+                </div>
+                <div class="picture-item__photo-description">Банк 1</div>
+              </div>
+              <div class="picture-item__description">
+                <div class="picture-item__bid"><b>Bid</b> - 1.27458</div>
+                <div class="picture-item__ask"><b>Ask</b> - 1.27476</div>
+              </div>
+              <div class="picture-item__arrow picture-item__arrow1">
+                <img src="img/arrow1.png" alt="arrow">
+              </div>
+            </div>
+            <div class="picture-item__bank">
+              <div class="picture-item__img">
+                <div class="picture-item__bank-img-skin">
+                  <img class="picture-item__photo" src="img/Bank2.png" alt="Банк 2">
+                </div>
+                <div class="picture-item__photo-description">Банк 2</div>
+              </div>
+              <div class="picture-item__description">
+                <div class="picture-item__bid"><b>Bid</b> - 1.27458</div>
+                <div class="picture-item__ask"><b>Ask</b> - 1.27476</div>
+              </div>
+              <div class="picture-item__arrow picture-item__arrow2">
+                <img src="img/arrow2.png" alt="arrow">
+              </div>
+            </div>
+            <div class="picture-item__bank">
+              <div class="picture-item__img">
+                <div class="picture-item__bank-img-skin">
+                  <img class="picture-item__photo" src="img/Bank3.png" alt="Банк 3">
+                </div>
+                <div class="picture-item__photo-description">Банк 3</div>
+              </div>
+              <div class="picture-item__description">
+                <div class="picture-item__bid"><b>Bid</b> - 1.27458</div>
+                <div class="picture-item__ask"><b>Ask</b> - 1.27476</div>
+              </div>
+              <div class="picture-item__arrow picture-item__arrow3">
+                <img src="img/arrow3.png" alt="arrow">
+              </div>
+            </div>
+            <div class="picture-item__bank">
+              <div class="picture-item__img">
+                <div class="picture-item__bank-img-skin">
+                  <img class="picture-item__photo" src="img/Bank4.png" alt="Банк 4">
+                </div>
+                <div class="picture-item__photo-description">Банк 4</div>
+              </div>
+              <div class="picture-item__description">
+                <div class="picture-item__bid"><b>Bid</b> - 1.27458</div>
+                <div class="picture-item__ask"><b>Ask</b>- 1.27476</div>
+              </div>
+              <div class="picture-item__arrow picture-item__arrow4">
+                <img src="img/arrow4.png" alt="arrow">
+              </div>
+            </div>
+          </div>
+          <div class="picture-item__table-inner">
+            <div class="picture-item__logo">
+              <img src="img/Logo.png" alt="Логотип">
+            </div>
+            <div class="picture-item__table-title">ECN-агрегатор</div>
+            <div class="picture-item__table">
+              <table cellpadding="4" class="picture-item__table-border">
+                <tr>
+                  <th>providers</th>
+                  <th>bid</th>
+                  <th>ask</th>
+                  <th>speed</th>
+                </tr>
+                <tr class="picture-item__table-row">
+                  <td class="picture-item__table-column1">Банк 1</td>
+                  <td class="picture-item__table-red">1,27458</td>
+                  <td class="picture-item__table-column">1,27476</td>
+                  <td class="picture-item__table-column">1.8 pips</td>
+                </tr>
+                <tr class="picture-item__table-row">
+                  <td class="picture-item__table-column1">Банк 2</td>
+                  <td class="picture-item__table-column">1,27455</td>
+                  <td class="picture-item__table-column">1,27462</td>
+                  <td class="picture-item__table-column">1.4 pips</td>
+                </tr>
+                <tr class="picture-item__table-row">
+                  <td class="picture-item__table-column1">Банк 3</td>
+                  <td class="picture-item__table-column">1,27451</td>
+                  <td class="picture-item__table-column">1,27469</td>
+                  <td class="picture-item__table-column">1.1 pips</td>
+                </tr>
+                <tr class="picture-item__table-row">
+                  <td class="picture-item__table-column1">Банк 4</td>
+                  <td class="picture-item__table-column">1,27453</td>
+                  <td class="picture-item__table-yellow">1,27460</td>
+                  <td class="picture-item__table-column">0.7 pips</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="picture-item__arrow-inner">
+            <img src="img/arrow-inner.png" alt="arrow">
+          </div>
+          <div class="picture-item__computer-inner">
+            <img src="img/computer.png" alt="компьютер">
+            <div class="picture-item__computer-result picture-item__computer-result--sell">
+            <div class="picture-item__computer-result-number">1.27458</div>
+              <div class="picture-item__computer-result-title">Sell</div>
+            </div>
+            <div class="picture-item__computer-result picture-item__computer-result--buy">
+              <div class="picture-item__computer-result-number">1.27462</div>
+              <div class="picture-item__computer-result-title">Buy</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="description-item">
+        <div class="description-item__inner">
+          <div class="description-item__title">Начни зарабатывать c Grand Capital </div>
+          <div class="description-item__item">
+            <div class="description-item__number">1</div>
+            <div class="description-item__description">
+              <div class="description-item__item-title">Зарегистрируйтесь и откройте счет</div>
+              <div class="description-item__item-description">Вы также можете открыть учебный демо-счет, чтобы понять принципы торговли.</div>
+            </div>
+          </div>
+          <div class="description-item__item">
+            <div class="description-item__number">2</div>
+            <div class="description-item__description">
+              <div class="description-item__item-title">Установите программу или откройте веб-трейдер в браузере</div>
+              <div class="description-item__item-description">Для работы на Forex необходима торговая платформа. Для вашего удобства мы предлагаем терминал Metatrader, который вы можете бесплатно установить с нашего сайта, и веб-трейдер для онлайн торговли в браузере.</div>
+            </div>
+          </div>
+          <div class="description-item__item">
+            <div class="description-item__number">3</div>
+            <div class="description-item__description">
+              <div class="description-item__item-title">Выберите торговую стратегию</div>
+              <div class="description-item__item-description">Спрогнозируйте, возрастет или снизится цена на выбранный вами актив, и на основе прогноза сделайте ставку на продажу или покупку.</div>
+            </div>
+          </div>
+          <div class="description-item__item">
+            <div class="description-item__number">4</div>
+            <div class="description-item__description">
+              <div class="description-item__item-title">Получайте прибыль</div>
+              <div class="description-item__item-description">Средства, полученные от торговли, вы можете вывести любым удобным способом. Мы гарантируем быстрые операции с любыми суммами</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div class="scroll-top" id="toTop"></div>
+<script src="js/script.min.js"></script>
+</body>
+</html>
